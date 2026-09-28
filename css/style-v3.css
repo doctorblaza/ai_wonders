@@ -58,13 +58,43 @@ body {
 
 /* ---------- Game layout ---------- */
 #game-screen { max-width: 1200px; margin: 0 auto; padding: 10px 14px 40px; }
+.sticky-wrap { position: sticky; top: 0; z-index: 60; background: var(--bg); padding-bottom: 8px; }
 header.topbar {
   display: flex; justify-content: space-between; align-items: center;
-  background: var(--panel); border-radius: 10px; padding: 8px 14px; margin-bottom: 10px;
-  position: sticky; top: 0; z-index: 20;
+  background: var(--panel); border-radius: 10px; padding: 8px 14px; margin-bottom: 8px;
 }
 #hud-era { font-weight: 700; font-size: 17px; }
 .topbtns .btn { margin: 2px; padding: 6px 10px; font-size: 13px; }
+
+/* ---------- Sticky player HUD: resources / built / live score ---------- */
+#hud { margin-bottom: 2px; }
+.hud {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: var(--panel2); border: 1px solid #3a4c6e; border-radius: 10px;
+  padding: 6px 12px; font-size: 14px;
+}
+.hud-img { width: 38px; height: 50px; object-fit: contain; }
+.hud-group { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.hud-k { color: var(--dim); font-size: 12px; }
+.hud-sub { color: var(--dim); font-size: 12px; }
+.hud-res { display: inline-flex; gap: 4px; align-items: center; }
+.hud-res .res {
+  background: #0e1626; border: 1px solid #2a3a55; border-radius: 6px;
+  padding: 1px 6px; font-size: 13px;
+}
+.hud-res .res.zero { opacity: .35; }
+.hud-res .res-flex { color: var(--accent); font-size: 13px; }
+.hud .dot { font-size: 12px; }
+.hud-score { margin-left: auto; cursor: pointer; }
+.score-big { font-size: 20px; color: var(--accent); }
+.hud-caret { color: var(--dim); font-size: 12px; }
+.hud-detail {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  background: var(--panel); border: 1px solid #2a3a55; border-top: none;
+  border-radius: 0 0 10px 10px; padding: 6px 12px; font-size: 13px;
+}
+.hud .hud-detail, #hud .hud-detail { margin-top: -2px; }
+.hud-cat i { font-style: normal; color: var(--dim); margin-right: 4px; }
 
 #opponents { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 10px; padding-bottom: 4px; }
 .opp {
@@ -164,6 +194,9 @@ img.tiny { width: 26px; height: 32px; object-fit: contain; vertical-align: middl
   .card { width: 128px; }
   .opp { flex: 0 0 168px; }
   #hud-era { font-size: 14px; }
+  .hud { gap: 8px; font-size: 13px; padding: 5px 10px; }
+  .hud-img { width: 30px; height: 40px; }
+  .score-big { font-size: 17px; }
   table.scores { font-size: 11px; }
   table.scores th, table.scores td { padding: 4px 5px; }
 }

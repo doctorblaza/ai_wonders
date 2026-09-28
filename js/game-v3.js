@@ -504,7 +504,7 @@ function optimalWildFor(pIdx, sciCounts) {
 
 // ==================== UI ====================
 
-const UI = { selectedCard: null, showOppCity: {}, lang: 'en' };
+const UI = { selectedCard: null, showOppCity: {}, showScore: false, lang: 'en' };
 
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -624,6 +624,7 @@ function oppPanel(p) {
 function renderAll() {
   if (!G) return;
   if (G.phase === 'gameover') { renderGameOver(); return; }
+  renderHUD();
   // header
   document.getElementById('hud-era').textContent =
     `${t('era')} ${['I','II','III'][G.age-1]} · ${t('eraName'+G.age)} — ${t('turn')} ${G.turn}/6`;
@@ -778,6 +779,73 @@ function renderLog() {
   el.innerHTML = G.log.map(m => `<div>${m}</div>`).join('');
   el.scrollTop = el.scrollHeight;
 }
+
+// ---------- Sticky player HUD: resources / built / live score ----------
+
+const RES_ICON = { talent: '👥', gpu: '🖥️', data: '💾', power: '⚡',
+                   algorithm: '🧠', architecture: '🏗️', patent: '📜' };
+
+// Fixed production per resource + flexible (either/or) sets, from the
+// turn-start production snapshot (same data the affordability check uses).
+function prodSummaryHTML(p) {
+  const sets = (p.ownSets && p.ownSets.length) ? p.ownSets : ownProdSets(p);
+  const fixed = {}, flex = [];
+  for (const s of sets) {
+    if (!s || !s.length) continue;
+    if (s.length === 1) fixed[s[0]] = (fixed[s[0]] || 0) + 1;
+    else flex.push(s);
+  }
+  let h = RES_ALL.map(r => {
+    const n = fixed[r] || 0;
+    return `<span class="res${n ? '' : ' zero'}" title="${esc(resName(r))}">${RES_ICON[r]}${n}</span>`;
+  }).join('');
+  if (flex.length)
+    h += `<span class="res-flex" title="${esc(t('hudFlex'))}">(` +
+      flex.map(s => s.map(r => RES_ICON[r]).join('/')).join(' ') + `)</span>`;
+  return h;
+}
+
+function milRecord(p) {
+  let w = 0, l = 0;
+  for (const x of p.military) { if (x.value > 0) w++; else if (x.value < 0) l++; }
+  return { w, l };
+}
+
+const SCORE_CATS = ['military', 'treasury', 'wonder', 'blue', 'green', 'yellow', 'purple'];
+
+function hudHTML() {
+  const p = G.players[0];
+  const f = FACTION_MAP[p.factionId];
+  const s = scorePlayer(0);
+  const rec = milRecord(p);
+  const open = !!UI.showScore;
+  let h = `<div class="hud">` +
+    `<img class="hud-img" src="${f.ceoImg}" alt="">` +
+    `<div class="hud-group"><span class="hud-k">${esc(t('coins'))}</span><b>$${p.coins}</b>` +
+    `<span class="hud-k">${esc(t('shields'))}</span><b>🛡${shieldsOf(0)}</b></div>` +
+    `<div class="hud-group"><span class="hud-k">${esc(t('hudResources'))}</span>` +
+    `<span class="hud-res">${prodSummaryHTML(p)}</span></div>` +
+    `<div class="hud-group"><span class="hud-k">${esc(t('hudBuilt'))}</span><b>${p.city.length}</b>` +
+    `<span class="hud-sub">🏛${p.wonderBuilt}/3 · ⚔️${esc(t('hudRecord', { w: rec.w, l: rec.l }))}</span> ${cityCompact(p)}</div>` +
+    `<div class="hud-group hud-score" onclick="UI_toggleScore()" title="${esc(t('hudTapDetail'))}">` +
+    `<span class="hud-k">${esc(t('hudScore'))}</span><b class="score-big">★${s.total}</b><span class="hud-caret">${open ? '▾' : '▸'}</span></div>` +
+    `</div>`;
+  if (open) {
+    const labels = { military: t('scoreMilitary'), treasury: t('scoreTreasury'), wonder: t('scoreWonder'),
+      blue: t('scoreBlue'), green: t('scoreGreen'), yellow: t('scoreYellow'), purple: t('scorePurple') };
+    h += `<div class="hud-detail">` +
+      SCORE_CATS.map(c => `<span class="hud-cat"><i>${esc(labels[c])}</i><b>${s[c]}</b></span>`).join('') +
+      `</div>`;
+  }
+  return h;
+}
+
+function renderHUD() {
+  const el = document.getElementById('hud');
+  if (el && G && G.phase !== 'gameover') el.innerHTML = hudHTML();
+}
+
+function UI_toggleScore() { UI.showScore = !UI.showScore; renderHUD(); }
 
 // ---------- UI event handlers (global) ----------
 

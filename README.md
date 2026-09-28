@@ -71,3 +71,7 @@ docs/DESIGN.md      full game design document
 - The 7 AI-assistant portraits use each AI's own official logo/brand image
   (ChatGPT, Claude, Gemini, Meta AI, Grok, Siri, Doubao). All trademarks belong
   to their respective owners; logos are used here for identification only.
+
+## Trailer
+
+- [AI Wonders trailer v5 (24 s, 1080p)](trailer/AI_Wonders_预告片_v5.mp4): real gameplay with mouse clicks (card drafting Turn 1 → Turn 4), the 7 CEO reveals synced to the beat, and the full-cast finale.

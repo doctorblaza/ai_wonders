@@ -8,10 +8,15 @@ Rules basis: **7 Wonders 1st Edition** (Repos Production, 2010). Terminology and
 AI-themed; the underlying mechanics (drafting, trading, conflicts, scoring) follow the
 verified base-game rules. See `docs/DESIGN.md` for the full design document.
 
-## Play
+## Play online
 
-Open `index.html` in any modern browser — no build step, no server required. Works from
-`file://` and from GitHub Pages.
+**https://doctorblaza.github.io/ai_wonders/** — no install, no account. Pick a
+language (English / 中文 / Español), pick your lab, and play 7 Wonders-style
+drafting against 6 AI opponents.
+
+(Or open `index.html` locally — no build step, no server required.)
+
+## Play
 
 1. Pick a language: **English** (default), **中文**, or **Español** (persisted).
 2. Pick your lab (CEO portrait shown).
@@ -29,14 +34,16 @@ An in-game **How to Play** guide is narrated by the 7 AI assistants
 
 ```
 index.html          game shell (title screen, HUD, modals)
-css/style.css       all styles (responsive, mobile-friendly)
-js/cards.js         card database: 147 cards (49/age), 10 moonshots (9 drafted)
-js/wonders.js       the 7 wonders + faction/CEO/AI-guide metadata
-js/game.js          core engine (draft, payment, conflicts, scoring) + UI
+css/style-v3.css    all styles (responsive, mobile-friendly)
+js/cards.js         card database: 78 cards (27/23/28 per age), 10 moonshots (9 drafted)
+js/wonders-v2.js      the 7 wonders + faction/CEO/AI-guide metadata (P5-style CEO portraits)
+js/game-v3.js       core engine (draft, payment, conflicts, scoring) + UI
 js/ai.js            6 heuristic AI opponents with per-lab personalities
-js/i18n.js          EN/中文/ES UI strings + localized card text
+js/i18n-v3.js       EN/中文/ES UI strings + localized card text
 js/tutorial.js      How-to-Play scripts (one AI narrator per topic)
-assets/portraits/   7 CEO + 7 AI portraits (transparent PNG, ROTK14 style)
+assets/portraits/   7 CEO portraits (Persona 5 anime style) + 7 AI official logos (transparent PNG)
+assets/cards/       78 unique card artworks (WebP)
+assets/wonders/     7 wonder panorama artworks (WebP)
 assets/backgrounds/ title-screen panorama
 docs/DESIGN.md      full game design document
 ```
@@ -58,5 +65,9 @@ docs/DESIGN.md      full game design document
 ## Notes
 
 - All game logic is client-side vanilla JS; AI opponents run in-page.
-- Card art is icon/color based; portraits are pre-rendered transparent PNGs.
+- Card art is 78 unique AI-generated WebP illustrations (one per card); wonder art is
+  7 wide WebP panoramas. Portraits are pre-rendered transparent PNGs.
 - Repo language is English (code, comments, docs). 中文/ES exist only as UI locales.
+- The 7 AI-assistant portraits use each AI's own official logo/brand image
+  (ChatGPT, Claude, Gemini, Meta AI, Grok, Siri, Doubao). All trademarks belong
+  to their respective owners; logos are used here for identification only.

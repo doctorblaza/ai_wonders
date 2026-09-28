@@ -167,3 +167,126 @@ img.tiny { width: 26px; height: 32px; object-fit: contain; vertical-align: middl
   table.scores { font-size: 11px; }
   table.scores th, table.scores td { padding: 4px 5px; }
 }
+
+/* ==================== v3: intuitive UI + 7-Wonders wonder board ==================== */
+
+/* ---------- Stepper ---------- */
+#stepper { margin-bottom: 10px; }
+.stepper {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  background: var(--panel); border-radius: 12px; padding: 10px 14px;
+  border: 1px solid #2a3a55;
+}
+.step {
+  display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px;
+  border-radius: 22px; border: 2px solid #33415c; color: var(--dim);
+  font-weight: 600; font-size: 14px;
+}
+.step-n {
+  width: 26px; height: 26px; border-radius: 50%; background: #33415c; color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;
+}
+.step.active { border-color: var(--accent); color: var(--text); box-shadow: 0 0 12px rgba(245,185,66,.35); }
+.step.active .step-n { background: var(--accent); color: #111; }
+.step.done { border-color: #2e9e5b; color: #7ce79a; }
+.step.done .step-n { background: #2e9e5b; color: #fff; }
+.step.todo { opacity: .55; }
+.step-arrow { color: var(--dim); font-size: 18px; }
+.step-actions { margin-left: auto; display: flex; gap: 12px; color: var(--dim); font-size: 13px; }
+.step-hint { margin-top: 6px; color: var(--accent); font-size: 14px; font-weight: 600; padding: 0 4px; }
+
+/* ---------- Hand card affordability ---------- */
+.card { position: relative; transition: transform .12s; }
+.hand-cards .card:hover { transform: translateY(-3px); }
+.card.afford-cost { filter: grayscale(.65); opacity: .82; }
+.card.afford-cost .card-cost.over { color: #ff6b5e; font-weight: 700; }
+.card.afford-dup { opacity: .55; }
+.card-flag {
+  position: absolute; top: 6px; left: 6px; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 10px; background: rgba(0,0,0,.68); z-index: 2;
+}
+.card-flag.ok { color: #7ce79a; border: 1px solid #2e9e5b; }
+.card-flag.dup { color: #93a3bd; border: 1px solid #3a4c6e; }
+.card-missing { color: #ff8a7a; font-size: 11px; margin: 0 8px 2px; font-weight: 600; }
+
+/* ---------- Action buttons ---------- */
+.btn.big3 {
+  display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+  padding: 10px 16px; min-width: 180px;
+}
+.abtn-t { font-size: 16px; font-weight: 700; }
+.abtn-s { font-size: 14px; color: var(--accent); font-weight: 700; margin-top: 2px; }
+.btn.big3:disabled .abtn-s { color: #ff8a7a; }
+.abtn-d { font-size: 12px; color: var(--dim); margin-top: 2px; }
+.selinfo { font-size: 14px; margin-bottom: 4px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.selcost { color: var(--accent); font-weight: 700; }
+.seleff { color: var(--dim); font-size: 12.5px; }
+.missline { color: #ff8a7a; font-size: 13.5px; font-weight: 600; margin: 2px 0 8px; }
+.payblocks { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+.payblock { background: #101828; border: 1px solid #2a3a55; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
+.payblock > b { display: block; margin-bottom: 4px; }
+.payline { color: var(--dim); padding: 1px 0; }
+
+/* ---------- Wonder board (7-Wonders style) ---------- */
+.wonder-art { position: relative; }
+.wonder-art::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top, rgba(5,8,15,.55), transparent 45%);
+}
+.wonder-name {
+  position: absolute; right: 12px; top: 10px; z-index: 2;
+  font-weight: 800; font-size: 20px; letter-spacing: 1px; color: #fff;
+  text-shadow: 0 2px 10px #000, 0 0 2px #000; margin: 0;
+}
+.wonder-stages { display: flex; gap: 8px; padding: 10px; background: #0c1322; }
+.wstage {
+  flex: 1 1 0; display: flex; align-items: center; gap: 10px;
+  background: #141d31; border: 2px solid #2a3a55; border-radius: 10px; padding: 8px 10px;
+  font-size: 13px; color: var(--text);
+}
+.wstage-seal {
+  flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800; color: var(--dim);
+  border: 3px double #3a4c6e; background: #0e1524;
+}
+.wstage-mid { flex: 1; min-width: 0; }
+.wstage-cost { font-weight: 700; color: var(--accent); font-size: 13px; }
+.wstage-arrow { color: var(--dim); font-size: 12px; line-height: 1.1; }
+.wstage-reward { color: var(--text); font-size: 13px; font-weight: 600; }
+.wstage-state { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 10px; white-space: nowrap; }
+.wstage.built { border-color: #2e9e5b; background: #12291b; color: #7ce79a; }
+.wstage.built .wstage-seal { color: #7ce79a; border-color: #2e9e5b; }
+.wstage.built .wstage-state { background: #1e4d2b; color: #7ce79a; }
+.wstage.next { border-color: var(--accent); box-shadow: 0 0 14px rgba(245,185,66,.4); }
+.wstage.next .wstage-seal { color: var(--accent); border-color: var(--accent); }
+.wstage.next .wstage-state { background: var(--accent); color: #111; }
+.wstage.locked { opacity: .45; }
+.wstage.locked .wstage-state { background: #2a3a55; color: var(--dim); }
+/* compact boards inside opponent panels */
+.opp-detail .wonder-art { aspect-ratio: 16/5; }
+.opp-detail .wonder-name { font-size: 14px; right: 8px; top: 6px; }
+.opp-detail .wonder-stages { padding: 6px; gap: 5px; }
+.opp-detail .wstage { padding: 5px 6px; gap: 6px; }
+.opp-detail .wstage-seal { flex-basis: 28px; width: 28px; height: 28px; font-size: 14px; }
+.opp-detail .wstage-cost, .opp-detail .wstage-reward { font-size: 11px; }
+.opp-detail .wstage-state { display: none; }
+
+/* ---------- Section labels + subdued rivals ---------- */
+.seclabel {
+  font-size: 12px; font-weight: 700; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 1.5px; margin: 2px 2px 6px;
+}
+#opponents { opacity: .93; }
+.opp-name { font-size: 12px; }
+.opp-stats { font-size: 11px; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 700px) {
+  .wonder-stages { gap: 5px; padding: 6px; }
+  .wstage { gap: 6px; padding: 6px; }
+  .wstage-seal { flex-basis: 32px; width: 32px; height: 32px; font-size: 15px; }
+  .wstage-cost, .wstage-reward { font-size: 11px; }
+  .btn.big3 { min-width: 140px; padding: 8px 10px; }
+  .step-actions { display: none; }
+}

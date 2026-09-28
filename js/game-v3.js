@@ -512,31 +512,88 @@ function cardHTML(cid, opts = {}) {
   const c = CARD_MAP[cid];
   const sel = opts.selected ? ' selected' : '';
   const dis = opts.disabled ? ' disabled' : '';
-  return `<div class="card color-${c.color}${sel}${dis}" data-card="${cid}" ${opts.clickable ? `onclick="UI_pickCard('${cid}')"` : ''}>
-    <div class="card-art"><img src="assets/cards/${cid}.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div>
+  const aff = opts.afford ? ` afford-${opts.afford}` : '';
+  const flag = opts.afford === 'ok' ? `<div class="card-flag ok">✓ ${esc(t('affordOk'))}</div>`
+    : opts.afford === 'dup' ? `<div class="card-flag dup">${esc(t('affordDup'))}</div>` : '';
+  const miss = opts.missing ? `<div class="card-missing">${esc(opts.missing)}</div>` : '';
+  return `<div class="card color-${c.color}${sel}${dis}${aff}" data-card="${cid}" ${opts.clickable ? `onclick="UI_pickCard('${cid}')"` : ''}>
+    <div class="card-art"><img src="assets/cards/${cid}.webp" alt="" loading="lazy" onerror="this.style.display='none'">${flag}</div>
     <div class="card-name">${esc(c.name[LANG])}</div>
-    <div class="card-cost">${esc(cardCostText(c))}</div>
+    <div class="card-cost${opts.afford === 'cost' ? ' over' : ''}">${esc(cardCostText(c))}</div>
+    ${miss}
     <div class="card-effect">${esc(cardEffectText(c))}</div>
   </div>`;
 }
 
+// Which cost resources can the player not obtain at any price? -> {res: count}
+function unobtainableRes(pIdx, cost) {
+  const P = G.players[pIdx];
+  const need = [];
+  for (const k in (cost.res || {})) for (let i = 0; i < cost.res[k]; i++) need.push(k);
+  const ownSets = (P.ownSets || []).map(s => [...s]);
+  const nbSets = [leftOf(pIdx), rightOf(pIdx)].map(i => (G.players[i].tradeProd || []).map(s => [...s]));
+  const missing = [];
+  for (const r of need) {
+    let got = false;
+    for (const s of ownSets) { const j = s.indexOf(r); if (j >= 0) { s.splice(j, 1); got = true; break; } }
+    if (!got) for (const sets of nbSets) {
+      for (const s of sets) { const j = s.indexOf(r); if (j >= 0) { s.splice(j, 1); got = true; break; } }
+      if (got) break;
+    }
+    if (!got) missing.push(r);
+  }
+  const counts = {};
+  for (const r of missing) counts[r] = (counts[r] || 0) + 1;
+  return counts;
+}
+
+// Affordability summary for a hand card: {cls:'ok'|'dup'|'cost', missing: text}
+function cardAffordInfo(pIdx, cid) {
+  const p = G.players[pIdx];
+  const card = CARD_MAP[cid];
+  const bi = buildInfo(pIdx, cid);
+  if (bi.ok) return { cls: 'ok', bi };
+  if (bi.reason === 'dup') return { cls: 'dup', bi };
+  const miss = [];
+  const un = unobtainableRes(pIdx, card.cost);
+  for (const k in un) miss.push(resName(k) + (un[k] > 1 ? '×' + un[k] : ''));
+  const coinShort = (card.cost.coins || 0) - p.coins;
+  if (coinShort > 0) miss.push(t('needCoins', { n: coinShort }));
+  return { cls: 'cost', bi, missing: miss.length ? t('missing') + '：' + miss.join('、') : t('cannotAfford') };
+}
+
 const WONDER_ART = { openai:'stargate', anthropic:'constitutionalai', google:'tpuv7', meta:'llama', xai:'colossus2', bytedance:'seed', apple:'privatecloud' };
 
+function wonderStageCostText(st) {
+  const b = [];
+  if (st.cost.coins) b.push('$' + st.cost.coins);
+  for (const k in (st.cost.res || {})) b.push(resName(k) + (st.cost.res[k] > 1 ? '×' + st.cost.res[k] : ''));
+  return b.length ? b.join(' + ') : t('free');
+}
+
+function wonderStageRewardText(st) {
+  return st.vp ? t('eff_vp', { n: st.vp }) : (st.desc ? st.desc[LANG] : (st.effect ? t('eff_' + st.effect) : ''));
+}
+
+// 7-Wonders-style board: wide art with name overlaid, 3 stage boxes in a row.
 function wonderHTML(p) {
   const w = WONDERS[p.factionId];
   let stages = '';
   for (let i = 0; i < 3; i++) {
     const st = w.stages[i];
     const built = i < p.wonderBuilt;
-    const costTxt = st.cost.coins || Object.keys(st.cost.res || {}).length
-      ? (() => { const b=[]; if (st.cost.coins) b.push('$'+st.cost.coins);
-          for (const k in (st.cost.res||{})) b.push(resName(k) + (st.cost.res[k]>1?'×'+st.cost.res[k]:''));
-          return b.join(' + '); })()
-      : t('free');
-    const reward = st.vp ? t('eff_vp',{n:st.vp}) : (st.desc ? st.desc[LANG] : (st.effect ? t('eff_'+st.effect) : ''));
-    stages += `<div class="wstage${built?' built':''}"><b>${i+1}</b> ${esc(costTxt)} → ${esc(reward)}</div>`;
+    const isNext = i === p.wonderBuilt;
+    const cls = built ? 'built' : (isNext ? 'next' : 'locked');
+    const seal = built ? '✓' : String(i + 1);
+    const state = built ? t('stageDone') : (isNext ? t('stageNext') : t('stageLater'));
+    stages += `<div class="wstage ${cls}">` +
+      `<div class="wstage-seal">${seal}</div>` +
+      `<div class="wstage-mid"><div class="wstage-cost">${esc(wonderStageCostText(st))}</div>` +
+      `<div class="wstage-arrow">→</div>` +
+      `<div class="wstage-reward">${esc(wonderStageRewardText(st))}</div></div>` +
+      `<div class="wstage-state">${esc(state)}</div></div>`;
   }
-  return `<div class="wonder"><div class="wonder-art"><img src="assets/wonders/${WONDER_ART[p.factionId]}.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="wonder-name">${esc(w.name[LANG])}</div>${stages}</div>`;
+  return `<div class="wonder"><div class="wonder-art"><img src="assets/wonders/${WONDER_ART[p.factionId]}.webp" alt="" loading="lazy" onerror="this.style.display='none'"><div class="wonder-name">${esc(w.name[LANG])}</div></div><div class="wonder-stages">${stages}</div></div>`;
 }
 
 function cityCompact(p) {
@@ -598,17 +655,22 @@ function renderHand() {
     handEl.innerHTML = `<div class="dim">—</div>`;
     document.getElementById('action-bar').innerHTML =
       `<button class="btn big" onclick="humanSkip()">${t('confirm')}</button>`;
+    renderStepper();
     return;
   }
   handEl.innerHTML = `<div class="hand-label">${t('yourHand')}</div><div class="hand-cards">` +
-    p.hand.map(cid => cardHTML(cid, { clickable: true, selected: UI.selectedCard === cid })).join('') +
+    p.hand.map(cid => {
+      const aff = cardAffordInfo(0, cid);
+      return cardHTML(cid, { clickable: true, selected: UI.selectedCard === cid,
+        afford: aff.cls, missing: aff.cls === 'cost' ? aff.missing : '' });
+    }).join('') +
     '</div>';
   renderActions();
 }
 
 function paymentText(pay) {
   const bits = [];
-  if (pay.bankCoins) bits.push('$' + pay.bankCoins + ' → bank');
+  if (pay.bankCoins) bits.push('$' + pay.bankCoins + ' → ' + t('bank'));
   for (const pur of pay.purchases) {
     const seller = FACTION_MAP[G.players[pur.to].factionId];
     bits.push(`$${pur.price} ${resName(pur.res)} → ${esc(seller.name[LANG])} (${t('dir_'+pur.dir)})`);
@@ -616,7 +678,54 @@ function paymentText(pay) {
   return bits.length ? bits.join(' · ') : t('free');
 }
 
+// Explicit per-neighbor cost breakdown shown under the action buttons.
+function paymentDetailHTML(pay) {
+  const bits = [];
+  if (pay.bankCoins)
+    bits.push(`<div class="payline">🏦 ${esc(t('payBank', { n: pay.bankCoins }))}</div>`);
+  const byNb = {};
+  for (const pur of pay.purchases) {
+    const k = pur.to + '|' + pur.dir;
+    if (!byNb[k]) byNb[k] = { to: pur.to, dir: pur.dir, items: {} };
+    const it = byNb[k].items[pur.res] || (byNb[k].items[pur.res] = { n: 0, c: 0 });
+    it.n++; it.c += pur.price;
+  }
+  for (const k in byNb) {
+    const g = byNb[k];
+    const f = FACTION_MAP[G.players[g.to].factionId];
+    const who = `${f.ceo[LANG]} · ${f.name[LANG]}`;
+    for (const r in g.items) {
+      const it = g.items[r];
+      bits.push(`<div class="payline">🤝 ${esc(t('tradeLine', { res: resName(r), n: it.n, c: it.c, who, dir: t('dir_' + g.dir) }))}</div>`);
+    }
+  }
+  return bits.length ? `<div class="paydetail">${bits.join('')}</div>` : '';
+}
+
+function paymentTotal(pay) { return (pay.bankCoins || 0) + (pay.purchaseCost || 0); }
+
+// Step strip: 1 pick a card → 2 choose an action. Always reflects current state.
+function renderStepper() {
+  const el = document.getElementById('stepper');
+  if (!el || !G) return;
+  if (G.phase === 'gameover') { el.innerHTML = ''; return; }
+  let s1 = 'todo', s2 = 'todo', hint = '';
+  if (G.phase === 'choose') {
+    if (UI.selectedCard) { s1 = 'done'; s2 = 'active'; hint = t('hintPickAction'); }
+    else { s1 = 'active'; hint = t('hintPickCard'); }
+  } else {
+    hint = t('waitingAI');
+  }
+  el.innerHTML = `<div class="stepper">
+      <div class="step ${s1}"><span class="step-n">${s1 === 'done' ? '✓' : '1'}</span><span class="step-t">${esc(t('step1'))}</span></div>
+      <div class="step-arrow">→</div>
+      <div class="step ${s2}"><span class="step-n">2</span><span class="step-t">${esc(t('step2'))}</span></div>
+      <div class="step-actions"><span>🏗 ${esc(t('build'))}</span><span>🏛 ${esc(t('buildWonder'))}</span><span>🔄 ${esc(t('discard'))}</span></div>
+    </div>${hint ? `<div class="step-hint">${esc(hint)}</div>` : ''}`;
+}
+
 function renderActions() {
+  renderStepper();
   const bar = document.getElementById('action-bar');
   const p = G.players[0];
   if (G.phase !== 'choose' || !UI.selectedCard) {
@@ -627,22 +736,34 @@ function renderActions() {
   const cid = UI.selectedCard, card = CARD_MAP[cid];
   const bi = buildInfo(0, cid);
   const wi = wonderInfo(0);
-  let html = `<div class="selinfo"><b>${esc(card.name[LANG])}</b> — ${esc(cardCostText(card))} · ${esc(cardEffectText(card))}</div><div class="abtns">`;
+  const aff = cardAffordInfo(0, cid);
+  let html = `<div class="selinfo"><b>${esc(card.name[LANG])}</b>` +
+    `<span class="selcost">${esc(cardCostText(card))}</span>` +
+    `<span class="seleff">${esc(cardEffectText(card))}</span></div>`;
+  if (aff.cls === 'cost') html += `<div class="missline">⚠️ ${esc(aff.missing)}</div>`;
+  html += `<div class="abtns">`;
   if (bi.ok) {
-    const extra = bi.free ? ` (${t('viaChain')})` : (bi.payment.purchaseCost || bi.payment.bankCoins) ? ` — ${paymentText(bi.payment)}` : '';
-    html += `<button class="btn build" onclick="UI_doAction('build')">${t('build')}${extra}</button>`;
+    const sub = bi.free ? t('viaChain') : (paymentTotal(bi.payment) ? '$' + paymentTotal(bi.payment) : t('free'));
+    html += `<button class="btn build big3" onclick="UI_doAction('build')"><span class="abtn-t">🏗️ ${t('build')}</span><span class="abtn-s">${esc(sub)}</span><span class="abtn-d">${esc(t('actBuildSub'))}</span></button>`;
   } else {
-    html += `<button class="btn" disabled>${t('build')} (${bi.reason==='dup'?t('alreadyBuilt'):t('cannotAfford')})</button>`;
+    html += `<button class="btn big3" disabled><span class="abtn-t">🏗️ ${t('build')}</span><span class="abtn-s">${bi.reason === 'dup' ? t('alreadyBuilt') : t('cannotAfford')}</span></button>`;
   }
   if (wi.ok) {
-    html += `<button class="btn wonder" onclick="UI_doAction('wonder')">${t('buildWonder')} ${wi.stageIdx+1}/3 — ${paymentText(wi.payment)}</button>`;
+    const sub = paymentTotal(wi.payment) ? '$' + paymentTotal(wi.payment) : t('free');
+    html += `<button class="btn wonder big3" onclick="UI_doAction('wonder')"><span class="abtn-t">🏛️ ${t('buildWonder')} ${wi.stageIdx + 1}/3</span><span class="abtn-s">${esc(sub)}</span><span class="abtn-d">${esc(t('actWonderSub'))}</span></button>`;
   } else {
     const r = wi.reason === 'max' ? t('err_noWonderStage') : t('cannotAfford');
-    html += `<button class="btn" disabled>${t('buildWonder')} (${r})</button>`;
+    html += `<button class="btn big3" disabled><span class="abtn-t">🏛️ ${t('buildWonder')}</span><span class="abtn-s">${r}</span></button>`;
   }
-  html += `<button class="btn discard" onclick="UI_doAction('discard')">${t('discard')}</button>`;
+  html += `<button class="btn discard big3" onclick="UI_doAction('discard')"><span class="abtn-t">🔄 ${t('discard')}</span><span class="abtn-d">${esc(t('actDiscardSub'))}</span></button>`;
   html += xaiButtonHTML();
   html += '</div>';
+  let det = '';
+  if (bi.ok && !bi.free && paymentTotal(bi.payment) > 0)
+    det += `<div class="payblock"><b>🏗 ${esc(t('build'))}</b>${paymentDetailHTML(bi.payment)}</div>`;
+  if (wi.ok && paymentTotal(wi.payment) > 0)
+    det += `<div class="payblock"><b>🏛 ${esc(t('buildWonder'))} ${wi.stageIdx + 1}/3</b>${paymentDetailHTML(wi.payment)}</div>`;
+  if (det) html += `<div class="payblocks">${det}</div>`;
   bar.innerHTML = html;
 }
 
@@ -691,12 +812,15 @@ function UI_xaiCancel() { UI.xaiMode = false; renderHand(); }
 
 function UI_toggleOpp(idx) { UI.showOppCity[idx] = !UI.showOppCity[idx]; renderAll(); }
 
+function applyStaticI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+}
+
 function UI_setLang(l) {
   setLang(l);
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const k = el.getAttribute('data-i18n');
-    el.textContent = t(k);
-  });
+  applyStaticI18n();
   if (G) renderAll(); else renderTitle();
 }
 
@@ -820,7 +944,7 @@ function renderGameOver() {
 
 function boot() {
   loadLang();
+  applyStaticI18n();
   renderTitle();
-  document.getElementById('btn-guide').textContent = t('howToPlay');
 }
 document.addEventListener('DOMContentLoaded', boot);

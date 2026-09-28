@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Wonders — The AGI Race</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <div id="title-screen"></div>
+
+  <div id="game-screen" class="hidden">
+    <header class="topbar">
+      <div id="hud-era"></div>
+      <div class="topbtns">
+        <button class="btn lang" onclick="UI_setLang('en')">EN</button><button class="btn lang" onclick="UI_setLang('zh')">中文</button><button class="btn lang" onclick="UI_setLang('es')">ES</button>
+        <button class="btn" id="btn-guide" onclick="UI_guide()">How to Play</button>
+      </div>
+    </header>
+    <div id="opponents"></div>
+    <div id="city"></div>
+    <div id="hand"></div>
+    <div id="action-bar"></div>
+    <div id="log"></div>
+  </div>
+
+  <div id="modal" class="hidden"></div>
+</div>
+
+<script src="js/cards.js"></script>
+<script src="js/wonders.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/tutorial.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

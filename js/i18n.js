@@ -1,0 +1,314 @@
+// AI Wonders - Internationalization
+// Default language: English. Persisted in localStorage key 'aiwonders_lang'.
+
+const I18N = {
+en: {
+  langName: 'English',
+  title: 'AI Wonders',
+  subtitle: 'The AGI Race — a 7 Wonders-style strategy card game',
+  chooseFaction: 'Choose your lab',
+  chooseLanguage: 'Language',
+  startGame: 'Start Game',
+  howToPlay: 'How to Play',
+  back: 'Back',
+  era: 'Era',
+  eraName1: 'Foundation', eraName2: 'Scaling', eraName3: 'AGI Race',
+  turn: 'Turn',
+  yourHand: 'Your hand — pick one card',
+  yourCity: 'Your Lab',
+  neighbors: 'Neighbors',
+  leftNeighbor: 'Left', rightNeighbor: 'Right',
+  coins: 'Funding', shields: 'Hype', vp: 'VP',
+  build: 'Build',
+  buildWonder: 'Wonder Stage',
+  discard: 'Pivot (+$3)',
+  cost: 'Cost', free: 'FREE', viaChain: 'Free via chain',
+  buyFrom: 'Buy from',
+  cannotAfford: 'Cannot afford',
+  alreadyBuilt: 'Already built',
+  mustPivot: 'Must pivot (cannot build)',
+  handPassed: 'Hands passed',
+  conflictTitle: 'Rivalry conflicts resolved',
+  win: 'Win', loss: 'Loss', tie: 'Tie',
+  gameOver: 'Game Over',
+  winner: 'Winner',
+  finalScores: 'Final Scores',
+  playAgain: 'Play Again',
+  scoreMilitary: 'Rivalry', scoreTreasury: 'Treasury', scoreWonder: 'Wonder',
+  scoreBlue: 'Ecosystem', scoreGreen: 'Breakthroughs', scoreYellow: 'Capital',
+  scorePurple: 'Moonshots', scoreTotal: 'Total',
+  tieBreak: 'Tie broken by funding',
+  sharedVictory: 'Shared victory!',
+  wonderStages: 'Wonder stages',
+  builtCards: 'Built',
+  guideTitle: 'How to Play',
+  close: 'Close',
+  confirm: 'Confirm', cancel: 'Cancel',
+  pickResource: 'Pick a resource',
+  wonderEffect: 'Wonder effect',
+  useFreeBuild: 'Use free build',
+  digTitle: 'Dig through discards — pick one to build free',
+  sciWildTitle: 'Pick your extra Breakthrough symbol',
+  turnLog: 'Log',
+  waitingAI: 'AI opponents are thinking…',
+  yourTurn: 'Your move',
+  aiThinking: 'thinking…',
+  // resources
+  res_talent: 'Talent', res_gpu: 'GPU', res_data: 'Data', res_power: 'Power',
+  res_algorithm: 'Algorithm', res_architecture: 'Architecture', res_patent: 'Patent',
+  // science
+  sci_model: 'Model', sci_method: 'Method', sci_insight: 'Insight',
+  // card colors
+  color_brown: 'Infrastructure', color_grey: 'Research Inputs', color_blue: 'Ecosystem',
+  color_green: 'Breakthroughs', color_yellow: 'Capital', color_red: 'Rivalry', color_purple: 'Moonshot',
+  // effect templates
+  eff_vp: '+{n} VP', eff_shields: '{n} Hype', eff_coins: '+${n}',
+  eff_prod: 'Produces {r}', eff_prodChoice: 'Produces {r1} or {r2}',
+  eff_discount_raw: 'Raw resources cost $1 from {dir} neighbor',
+  eff_discount_refined: 'Refined resources cost $1 from {dir} neighbor',
+  eff_notTradeable: '(not tradeable)',
+  dir_left: 'left', dir_right: 'right', dir_both: 'both',
+  eff_perCard_coins: '+${c} per {col} card ({who})',
+  eff_perCard_vp: '+{v} VP per {col} card ({who})',
+  who_self: 'yours', who_neighbors: "neighbors'", who_all: 'yours + neighbors',
+  col_brown: 'Infrastructure', col_grey: 'Research', col_blue: 'Ecosystem',
+  col_green: 'Breakthrough', col_yellow: 'Capital', col_red: 'Rivalry',
+  col_purple: 'Moonshot', col_wonder: 'wonder stage', col_defeat: 'defeat token',
+  col_brownGreyPurple: 'Infrastructure/Research/Moonshot',
+  eff_sciWild: 'Extra Breakthrough symbol of your choice (at game end)',
+  eff_hype2: '+2 Hype in every conflict',
+  eff_rawChoice: '1 raw resource of choice each turn (not tradeable)',
+  eff_coins9: '+$9 funding immediately',
+  eff_freeBuild: 'Build one structure free, once per Era',
+  eff_digDiscard: 'Dig ALL discards, build one free (end of turn)',
+  err_noWonderStage: 'All wonder stages built',
+  msg_wonderBuilt: 'Wonder stage built!',
+  msg_cardBuilt: 'Built',
+  msg_pivoted: 'Pivoted for +$3',
+  msg_discarded6th: '6th-turn leftover discarded (no coins)',
+  msg_conflict: '{you} {a} vs {b} {c}',
+  reveal: 'Reveal',
+},
+zh: {
+  langName: '中文',
+  title: 'AI Wonders',
+  subtitle: 'AGI 竞赛 —— 七大奇迹式策略卡牌游戏',
+  chooseFaction: '选择你的实验室',
+  chooseLanguage: '语言',
+  startGame: '开始游戏',
+  howToPlay: '玩法说明',
+  back: '返回',
+  era: '时代',
+  eraName1: '奠基', eraName2: '扩张', eraName3: 'AGI 竞赛',
+  turn: '回合',
+  yourHand: '你的手牌 —— 选一张',
+  yourCity: '你的实验室',
+  neighbors: '邻居',
+  leftNeighbor: '左', rightNeighbor: '右',
+  coins: '资金', shields: '声势', vp: '胜利分',
+  build: '建造',
+  buildWonder: '奇观阶段',
+  discard: '转型 (+$3)',
+  cost: '费用', free: '免费', viaChain: '连锁免费',
+  buyFrom: '从邻居购买',
+  cannotAfford: '买不起',
+  alreadyBuilt: '已建造',
+  mustPivot: '必须转型（无法建造）',
+  handPassed: '手牌已传递',
+  conflictTitle: '对抗结算',
+  win: '胜', loss: '负', tie: '平',
+  gameOver: '游戏结束',
+  winner: '获胜者',
+  finalScores: '最终得分',
+  playAgain: '再来一局',
+  scoreMilitary: '对抗', scoreTreasury: '资金库', scoreWonder: '奇观',
+  scoreBlue: '生态', scoreGreen: '突破', scoreYellow: '资本',
+  scorePurple: '登月计划', scoreTotal: '总分',
+  tieBreak: '按资金多少决出胜负',
+  sharedVictory: '并列获胜！',
+  wonderStages: '奇观阶段',
+  builtCards: '已建造',
+  guideTitle: '玩法说明',
+  close: '关闭',
+  confirm: '确认', cancel: '取消',
+  pickResource: '选择一种资源',
+  wonderEffect: '奇观效果',
+  useFreeBuild: '使用免费建造',
+  digTitle: '翻看弃牌堆 —— 选一张免费建造',
+  sciWildTitle: '选择你的额外突破符号',
+  turnLog: '日志',
+  waitingAI: 'AI 对手思考中…',
+  yourTurn: '轮到你行动',
+  aiThinking: '思考中…',
+  res_talent: '人才', res_gpu: 'GPU', res_data: '数据', res_power: '电力',
+  res_algorithm: '算法', res_architecture: '架构', res_patent: '专利',
+  sci_model: '模型', sci_method: '方法', sci_insight: '洞察',
+  color_brown: '基础设施', color_grey: '研究投入', color_blue: '生态',
+  color_green: '突破', color_yellow: '资本', color_red: '对抗', color_purple: '登月计划',
+  eff_vp: '+{n} 胜利分', eff_shields: '{n} 声势', eff_coins: '+${n}',
+  eff_prod: '产出 {r}', eff_prodChoice: '产出 {r1} 或 {r2}',
+  eff_discount_raw: '从{dir}邻居购买基础资源只需 $1',
+  eff_discount_refined: '从{dir}邻居购买精炼资源只需 $1',
+  eff_notTradeable: '（不可交易）',
+  dir_left: '左', dir_right: '右', dir_both: '两侧',
+  eff_perCard_coins: '每张{col}牌 +${c}（{who}）',
+  eff_perCard_vp: '每张{col}牌 +{v} 胜利分（{who}）',
+  who_self: '你的', who_neighbors: '邻居的', who_all: '你和邻居的',
+  col_brown: '基础设施', col_grey: '研究', col_blue: '生态',
+  col_green: '突破', col_yellow: '资本', col_red: '对抗',
+  col_purple: '登月计划', col_wonder: '奇观阶段', col_defeat: '失败标记',
+  col_brownGreyPurple: '基础设施/研究/登月',
+  eff_sciWild: '终局自选一个额外突破符号',
+  eff_hype2: '每次冲突 +2 声势',
+  eff_rawChoice: '每回合自选产出1个基础资源（不可交易）',
+  eff_coins9: '立即 +$9 资金',
+  eff_freeBuild: '每个时代可免费建造一张牌一次',
+  eff_digDiscard: '翻看所有弃牌堆并免费建造一张（回合结束时）',
+  err_noWonderStage: '奇观阶段已全部建成',
+  msg_wonderBuilt: '奇观阶段建成！',
+  msg_cardBuilt: '已建造',
+  msg_pivoted: '转型获得 +$3',
+  msg_discarded6th: '第六回合剩余牌弃置（无资金）',
+  msg_conflict: '{you} {a} vs {b} {c}',
+  reveal: '揭示',
+},
+es: {
+  langName: 'Español',
+  title: 'AI Wonders',
+  subtitle: 'La carrera AGI — juego de cartas de estrategia estilo 7 Wonders',
+  chooseFaction: 'Elige tu laboratorio',
+  chooseLanguage: 'Idioma',
+  startGame: 'Empezar',
+  howToPlay: 'Cómo jugar',
+  back: 'Atrás',
+  era: 'Era',
+  eraName1: 'Fundación', eraName2: 'Expansión', eraName3: 'Carrera AGI',
+  turn: 'Turno',
+  yourHand: 'Tu mano — elige una carta',
+  yourCity: 'Tu laboratorio',
+  neighbors: 'Vecinos',
+  leftNeighbor: 'Izquierda', rightNeighbor: 'Derecha',
+  coins: 'Fondos', shields: 'Hype', vp: 'PV',
+  build: 'Construir',
+  buildWonder: 'Etapa de maravilla',
+  discard: 'Pivotar (+$3)',
+  cost: 'Coste', free: 'GRATIS', viaChain: 'Gratis por cadena',
+  buyFrom: 'Comprar a',
+  cannotAfford: 'No puedes pagarlo',
+  alreadyBuilt: 'Ya construido',
+  mustPivot: 'Debes pivotar (no se puede construir)',
+  handPassed: 'Manos pasadas',
+  conflictTitle: 'Conflictos resueltos',
+  win: 'Victoria', loss: 'Derrota', tie: 'Empate',
+  gameOver: 'Fin del juego',
+  winner: 'Ganador',
+  finalScores: 'Puntuación final',
+  playAgain: 'Jugar de nuevo',
+  scoreMilitary: 'Rivalidad', scoreTreasury: 'Tesorería', scoreWonder: 'Maravilla',
+  scoreBlue: 'Ecosistema', scoreGreen: 'Avances', scoreYellow: 'Capital',
+  scorePurple: 'Moonshots', scoreTotal: 'Total',
+  tieBreak: 'Desempate por fondos',
+  sharedVictory: '¡Victoria compartida!',
+  wonderStages: 'Etapas de maravilla',
+  builtCards: 'Construido',
+  guideTitle: 'Cómo jugar',
+  close: 'Cerrar',
+  confirm: 'Confirmar', cancel: 'Cancelar',
+  pickResource: 'Elige un recurso',
+  wonderEffect: 'Efecto de maravilla',
+  useFreeBuild: 'Usar construcción gratis',
+  digTitle: 'Rebusca en los descartes — elige uno para construir gratis',
+  sciWildTitle: 'Elige tu símbolo de avance extra',
+  turnLog: 'Registro',
+  waitingAI: 'Los rivales IA están pensando…',
+  yourTurn: 'Tu turno',
+  aiThinking: 'pensando…',
+  res_talent: 'Talento', res_gpu: 'GPU', res_data: 'Datos', res_power: 'Energía',
+  res_algorithm: 'Algoritmo', res_architecture: 'Arquitectura', res_patent: 'Patente',
+  sci_model: 'Modelo', sci_method: 'Método', sci_insight: 'Insight',
+  color_brown: 'Infraestructura', color_grey: 'Insumos', color_blue: 'Ecosistema',
+  color_green: 'Avances', color_yellow: 'Capital', color_red: 'Rivalidad', color_purple: 'Moonshot',
+  eff_vp: '+{n} PV', eff_shields: '{n} Hype', eff_coins: '+${n}',
+  eff_prod: 'Produce {r}', eff_prodChoice: 'Produce {r1} o {r2}',
+  eff_discount_raw: 'Recursos básicos a $1 del vecino {dir}',
+  eff_discount_refined: 'Recursos refinados a $1 del vecino {dir}',
+  eff_notTradeable: '(no comerciable)',
+  dir_left: 'izquierdo', dir_right: 'derecho', dir_both: 'ambos',
+  eff_perCard_coins: '+${c} por carta {col} ({who})',
+  eff_perCard_vp: '+{v} PV por carta {col} ({who})',
+  who_self: 'tuyas', who_neighbors: 'de vecinos', who_all: 'tuyas + vecinos',
+  col_brown: 'Infraestructura', col_grey: 'Investigación', col_blue: 'Ecosistema',
+  col_green: 'Avance', col_yellow: 'Capital', col_red: 'Rivalidad',
+  col_purple: 'Moonshot', col_wonder: 'etapa de maravilla', col_defeat: 'ficha de derrota',
+  col_brownGreyPurple: 'Infraestructura/Investigación/Moonshot',
+  eff_sciWild: 'Símbolo de avance extra a elegir (al final)',
+  eff_hype2: '+2 Hype en cada conflicto',
+  eff_rawChoice: '1 recurso básico a elegir por turno (no comerciable)',
+  eff_coins9: '+$9 de fondos de inmediato',
+  eff_freeBuild: 'Construye una carta gratis, una vez por Era',
+  eff_digDiscard: 'Mira todos los descartes y construye uno gratis (al final del turno)',
+  err_noWonderStage: 'Todas las etapas construidas',
+  msg_wonderBuilt: '¡Etapa de maravilla construida!',
+  msg_cardBuilt: 'Construida',
+  msg_pivoted: 'Pivotaste por +$3',
+  msg_discarded6th: 'Carta sobrante del 6.º turno descartada (sin monedas)',
+  msg_conflict: '{you} {a} vs {b} {c}',
+  reveal: 'Revelar',
+},
+};
+
+let LANG = 'en';
+function t(key, params) {
+  const dict = I18N[LANG] || I18N.en;
+  let s = dict[key] !== undefined ? dict[key] : (I18N.en[key] || key);
+  if (params) for (const k in params) s = s.replace('{' + k + '}', params[k]);
+  return s;
+}
+function setLang(l) {
+  if (I18N[l]) { LANG = l; try { localStorage.setItem('aiwonders_lang', l); } catch(e){} }
+}
+function loadLang() {
+  try {
+    const l = localStorage.getItem('aiwonders_lang');
+    if (l && I18N[l]) LANG = l;
+  } catch(e){}
+}
+function resName(r) { return t('res_' + r); }
+function sciName(s) { return t('sci_' + s); }
+
+// Localized one-line effect description for a card
+function cardEffectText(card) {
+  const parts = [];
+  if (card.vp) parts.push(t('eff_vp', {n: card.vp}));
+  if (card.shields) parts.push(t('eff_shields', {n: card.shields}));
+  if (card.coins) parts.push(t('eff_coins', {n: card.coins}));
+  if (card.prod) {
+    const ks = Object.keys(card.prod);
+    parts.push(t('eff_prod', {r: ks.map(k => resName(k) + (card.prod[k] > 1 ? '×' + card.prod[k] : '')).join(' + ')}));
+  }
+  if (card.prodChoice) {
+    const names = card.prodChoice.map(resName);
+    parts.push(t('eff_prodChoice', {r1: names[0], r2: names.slice(1).join('/')}) +
+      (card.notTradeable ? ' ' + t('eff_notTradeable') : ''));
+  }
+  if (card.sci) parts.push('🔬 ' + sciName(card.sci));
+  if (card.sciWild) parts.push(t('eff_sciWild'));
+  if (card.discount) parts.push(t('eff_discount_' + card.discount.types, {dir: t('dir_' + card.discount.dir)}));
+  if (card.perCard) {
+    const pc = card.perCard;
+    const colKey = pc.color === 'brown+grey+purple' ? 'col_brownGreyPurple' : 'col_' + pc.color;
+    if (pc.coins) parts.push(t('eff_perCard_coins', {c: pc.coins, col: t(colKey), who: t('who_' + pc.who)}));
+    if (pc.vp) parts.push(t('eff_perCard_vp', {v: pc.vp, col: t(colKey), who: t('who_' + pc.who)}));
+  }
+  return parts.join(' · ');
+}
+
+function cardCostText(card) {
+  const bits = [];
+  if (card.cost.coins) bits.push('$' + card.cost.coins);
+  for (const k of Object.keys(card.cost.res || {})) {
+    const n = card.cost.res[k];
+    bits.push(resName(k) + (n > 1 ? '×' + n : ''));
+  }
+  return bits.length ? bits.join(' + ') : t('free');
+}
